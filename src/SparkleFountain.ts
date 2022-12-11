@@ -26,10 +26,16 @@ export default class SparkleFountain implements GameObject {
   mouseMove(e: any): void {
     if (this.hold) {
       instantiate(Sparkle, { location: new Victor(e.x, e.y) });
+      instantiate(Sparkle, { location: new Victor(e.x, e.y) });
+      instantiate(Sparkle, { location: new Victor(e.x, e.y) });
+      instantiate(Sparkle, { location: new Victor(e.x, e.y) });
     }
   }
 
   mouseDown(e: any): void {
+    instantiate(Sparkle, { location: new Victor(e.x, e.y) });
+    instantiate(Sparkle, { location: new Victor(e.x, e.y) });
+    instantiate(Sparkle, { location: new Victor(e.x, e.y) });
     instantiate(Sparkle, { location: new Victor(e.x, e.y) });
     this.hold = true;
   }

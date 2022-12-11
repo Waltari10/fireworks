@@ -8,14 +8,14 @@ import { TARGET_FRAME_DURATION } from "./contants";
 
 import Color from "color";
 
-const lifeSpanMs = 5000;
+const lifeSpanMs = 2500;
 const pathLength = lifeSpanMs / TARGET_FRAME_DURATION;
 
 const createPath = (): number[] => {
   const options = {
-    octaveCount: 0, // 4 defaults
-    amplitude: 5000, // 0.1
-    persistence: 0.0, // 0.2
+    octaveCount: 4, // 4 defaults
+    amplitude: 0.1, // 0.1
+    persistence: 0.1, // 0.2
   };
   return perlin.generatePerlinNoise(pathLength, 1, options);
 };
@@ -65,8 +65,8 @@ export default class Sparkle implements GameObject {
       this.path.length
     );
 
-    const speed = 2;
-    const locationChangeVector = new Victor(speed * this.path[pathIndex], 1);
+    const speed = 20;
+    const locationChangeVector = new Victor(speed * this.path[pathIndex], 5);
     locationChangeVector.rotate(this.direction);
 
     this.location.add(locationChangeVector);
@@ -87,8 +87,15 @@ export default class Sparkle implements GameObject {
 
     ctx.strokeStyle = hexaColor;
     ctx.fillStyle = hexaColor;
+    ctx.beginPath();
+    if (this.history.length > 0) {
+      ctx.moveTo(this.history[0].x, this.history[0].y);
+    } else {
+      ctx.moveTo(this.location.x, this.location.y);
+    }
+
     this.history.forEach((location) => {
-      ctx.rect(location.x, location.y, 1, 1);
+      ctx.lineTo(location.x, location.y);
     });
 
     ctx.rect(this.location.x, this.location.y, 1, 1);
