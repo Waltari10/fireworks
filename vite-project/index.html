@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + TS</title>
+</head>
+
+<body>
+  <canvas id="canvas" style='position:absolute; left:0px; top:0px;'>
+    This text is displayed if your browser does not support HTML5 Canvas.
+  </canvas>
+  <h1 id="fpsCounter" class="fpsCounter">FPS: </h1>
+  <script>
+    (function () {
+      var htmlCanvas = document.getElementById('canvas')
+
+      initialize();
+
+      function initialize() {
+        // Register an event listener to call the resizeCanvas() function 
+        // each time the window is resized.
+        window.addEventListener('resize', resizeCanvas, false);
+        // Draw canvas border for the first time.
+        resizeCanvas();
+      }
+
+      // Runs each time the DOM window resize event fires.
+      // Resets the canvas dimensions to match window,
+      // then draws the new borders accordingly.
+      function resizeCanvas() {
+        htmlCanvas.width = window.innerWidth;
+        htmlCanvas.height = window.innerHeight;
+      }
+    })();
+  </script>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
