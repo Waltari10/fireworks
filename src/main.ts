@@ -2,8 +2,8 @@ import "./style.css";
 import uniqid from "uniqid";
 import GameObject from "./GameObject";
 import { canvas, ctx } from "./canvas";
-import SparkleFountain from "./SparkleFountain";
 import { TARGET_FRAME_DURATION } from "./contants";
+import FireworksScene from "./FireworksScene";
 
 const gameObjects: Record<string, GameObject> = {};
 
@@ -71,7 +71,7 @@ function loop(): void {
 }
 
 const createScene = (): void => {
-  instantiate(SparkleFountain, {});
+  instantiate(FireworksScene, {});
 };
 
 createScene();
