@@ -8,8 +8,8 @@ import { TARGET_FRAME_DURATION } from "./contants";
 
 import Color from "color";
 
-const lifeSpanMs = 2500;
-const pathLength = lifeSpanMs / TARGET_FRAME_DURATION;
+const lifeSpanMs = 2000;
+const pathLength = Math.ceil(lifeSpanMs / TARGET_FRAME_DURATION);
 
 const createPath = (): number[] => {
   const options = {
@@ -97,7 +97,5 @@ export default class Sparkle implements GameObject {
     this.history.forEach((location) => {
       ctx.lineTo(location.x, location.y);
     });
-
-    ctx.rect(this.location.x, this.location.y, 1, 1);
   }
 }

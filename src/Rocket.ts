@@ -10,6 +10,8 @@ import _ from "lodash";
 import Color from "color";
 import Sparkle from "./Sparkle";
 import ExplosionLight from "./ExplosionLight";
+import Spark from "./Spark";
+import { COLORS } from "./constants";
 
 const lifeSpanMs = 2500;
 const pathLength = lifeSpanMs / TARGET_FRAME_DURATION;
@@ -42,11 +44,7 @@ export default class Rocket implements GameObject {
     this.location = location;
     this.id = id;
     this.direction = direction;
-    this.color = Color({
-      r: Math.random() * 255,
-      g: Math.random() * 255,
-      b: Math.random() * 255,
-    });
+    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
     this.history = [];
     this.speed = (Math.random() * maxSpeed) / 3 + (maxSpeed * 2) / 3;
   }
@@ -70,13 +68,15 @@ export default class Rocket implements GameObject {
     const shouldBeDestroyed = timeSinceCreationMs > lifeSpanMs;
 
     if (shouldBeDestroyed) {
-      for (let i = 0; i < 50; i++) {
-        instantiate(Sparkle, { location: this.location.clone() });
-      }
-      instantiate(ExplosionLight, { location: this.location.clone() });
-      destroy(this);
+      this.explode();
       return;
     }
+
+    instantiate(Spark, {
+      location: this.location.clone(),
+      direction: this.direction + Math.PI,
+      color: this.color,
+    });
 
     const pathIndex = Math.min(
       Math.floor(timeSinceCreationMs / timeDelta),
@@ -85,7 +85,7 @@ export default class Rocket implements GameObject {
 
     this.speed = this.speed * this.slowDownFactor;
     const forwardSpeed = this.speed * this.slowDownFactor;
-    const sidewaysSpeed = 15;
+    const sidewaysSpeed = 5;
 
     const forwardVector = new Victor(
       forwardSpeed,
@@ -98,9 +98,7 @@ export default class Rocket implements GameObject {
 
     const timeLeft = lifeSpanMs - timeSinceCreationMs;
 
-    const newColor = this.color
-      .rotate(timeDelta / 3)
-      .alpha(timeLeft / (lifeSpanMs / 5));
+    const newColor = this.color.alpha(timeLeft / (lifeSpanMs / 5));
 
     this.color = newColor;
 
@@ -141,5 +139,18 @@ export default class Rocket implements GameObject {
       });
   }
 
-  explode() {}
+  explode() {
+    for (let i = 0; i < 25; i++) {
+      instantiate(Sparkle, { location: this.location.clone() });
+    }
+    for (let i = 0; i < Math.PI * 2; i = i + Math.random() * (Math.PI / 100)) {
+      instantiate(Spark, {
+        location: this.location.clone(),
+        direction: i,
+        color: this.color,
+      });
+    }
+    instantiate(ExplosionLight, { location: this.location.clone() });
+    destroy(this);
+  }
 }

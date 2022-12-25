@@ -4,12 +4,13 @@ import GameObject from "./GameObject";
 // @ts-expect-error
 import perlin from "perlin-noise";
 import { destroy } from "./main";
+import { EXPLOSION_DURATION } from "./constants";
 
-const lifeSpanMs = 2500;
+const lifeSpanMs = EXPLOSION_DURATION;
 const image = new Image();
 image.src = "./light.png";
 
-const maxLightSize = 1000;
+const maxLightSize = 500;
 const initialLightSize =
   Math.random() * (maxLightSize / 2) + maxLightSize * (1 / 2);
 
