@@ -3,7 +3,7 @@ import Color from "color";
 export const EXPLOSION_DURATION = 2000;
 export const GRAVITY = 9.81;
 
-const hslColors = new Array(100)
+const colors = new Array(200)
   .fill(0)
   .map(() =>
     Color([
@@ -11,8 +11,7 @@ const hslColors = new Array(100)
       Math.random() * 255,
       Math.random() * 255,
     ]).saturate(100)
-  );
+  )
+  .filter((c) => c.contrast(Color("black")) > 7);
 
-console.log(hslColors.map((c) => c.hexa()));
-
-export const COLORS = [...hslColors];
+export const COLORS = [...colors];
