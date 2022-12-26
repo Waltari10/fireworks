@@ -15,8 +15,6 @@ import { COLORS } from "./constants";
 
 const lifeSpanMs = 2500;
 const pathLength = lifeSpanMs / TARGET_FRAME_DURATION;
-const image = new Image();
-image.src = "./light.png";
 
 const createPath = (): number[] => {
   const options = {
@@ -61,7 +59,7 @@ export default class Rocket implements GameObject {
   id: string;
   direction: number;
   initialSpeed = maxSpeed;
-  initialLightSize = 50;
+  size = Math.random() * 80 + 20;
   slowDownFactor = 0.98; // TODO: Adjust based on screen height to stop at middle of screen
   update(): void {
     const timeSinceCreationMs = Date.now() - this.createdAt;
@@ -107,15 +105,28 @@ export default class Rocket implements GameObject {
 
   render(): void {
     const brightness = this.speed / maxSpeed;
-    const lightSize = this.initialLightSize * brightness;
+    const lightSize = this.size * brightness;
 
-    ctx.drawImage(
-      image,
+    const gradient = ctx.createRadialGradient(
+      this.location.x,
+      this.location.y,
+      lightSize / 50,
+      this.location.x,
+      this.location.y,
+      lightSize / 2
+    );
+
+    gradient.addColorStop(0, this.color.alpha(1).hexa());
+    gradient.addColorStop(0.1, this.color.alpha(1).hexa());
+    gradient.addColorStop(1, "transparent");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(
       this.location.x - lightSize / 2,
       this.location.y - lightSize / 2,
       lightSize,
       lightSize
     );
+
     const hexaColor = this.color.alpha(brightness).hexa();
 
     ctx.strokeStyle = hexaColor;
@@ -145,12 +156,22 @@ export default class Rocket implements GameObject {
     }
     for (let i = 0; i < Math.PI * 2; i = i + Math.random() * (Math.PI / 100)) {
       instantiate(Spark, {
+        speed: this.size / 15 + Math.random() / 3,
+        location: this.location.clone(),
+        direction: i,
+        color: this.color,
+      });
+      instantiate(Spark, {
+        speed: (this.size / 15) * Math.random(),
         location: this.location.clone(),
         direction: i,
         color: this.color,
       });
     }
-    instantiate(ExplosionLight, { location: this.location.clone() });
+    instantiate(ExplosionLight, {
+      location: this.location.clone(),
+      color: this.color,
+    });
     destroy(this);
   }
 }

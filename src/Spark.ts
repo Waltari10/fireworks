@@ -15,11 +15,13 @@ export default class Spark implements GameObject {
     location = new Victor(0, 0),
     direction,
     color,
+    speed,
   }: {
     id: string;
     location: Victor;
     direction: number;
     color: Color;
+    speed: number;
   }) {
     this.color =
       color ||
@@ -28,6 +30,7 @@ export default class Spark implements GameObject {
         g: 255,
         b: 255,
       });
+    this.speed = speed ?? Math.random() * 5;
     this.createdAt = Date.now();
     this.location = location;
     this.id = id;
@@ -37,7 +40,7 @@ export default class Spark implements GameObject {
   color: Color;
   createdAt: number;
   location: Victor;
-  speed: number = Math.random() * 5;
+  speed: number;
   ySpeed: number = 0;
   slowDownFactor: number = 0.981;
 
