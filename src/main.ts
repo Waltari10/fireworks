@@ -4,6 +4,7 @@ import GameObject from "./GameObject";
 import { canvas, ctx } from "./canvas";
 import { TARGET_FRAME_DURATION } from "./contants";
 import FireworksScene from "./FireworksScene";
+import TextScene from "./TextScene";
 
 const gameObjects: Record<string, GameObject> = {};
 
@@ -33,8 +34,8 @@ window.addEventListener("resize", resizeCanvas, false);
 resizeCanvas();
 
 function draw(): void {
-  ctx.fillStyle = "#0a0a0a";
-  ctx.strokeStyle = "#0a0a0a";
+  ctx.fillStyle = "black";
+  ctx.strokeStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   for (const key in gameObjects) {
     ctx.beginPath();
@@ -72,6 +73,7 @@ function loop(): void {
 
 const createScene = (): void => {
   instantiate(FireworksScene, {});
+  // instantiate(TextScene, {});
 };
 
 createScene();

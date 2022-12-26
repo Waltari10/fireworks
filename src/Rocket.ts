@@ -12,6 +12,7 @@ import Sparkle from "./Sparkle";
 import ExplosionLight from "./ExplosionLight";
 import Spark from "./Spark";
 import { COLORS } from "./constants";
+import heartCoordinates from "./heart.json";
 
 const lifeSpanMs = 2500;
 const pathLength = lifeSpanMs / TARGET_FRAME_DURATION;
@@ -72,7 +73,9 @@ export default class Rocket implements GameObject {
 
     instantiate(Spark, {
       location: this.location.clone(),
-      direction: this.direction + Math.PI,
+      speed: new Victor(Math.random() * 5, 0).rotate(
+        this.direction + Math.PI + (Math.random() * Math.PI) / 6 - Math.PI / 12
+      ),
       color: this.color,
     });
 
@@ -154,20 +157,33 @@ export default class Rocket implements GameObject {
     for (let i = 0; i < 25; i++) {
       instantiate(Sparkle, { location: this.location.clone() });
     }
-    for (let i = 0; i < Math.PI * 2; i = i + Math.random() * (Math.PI / 100)) {
-      instantiate(Spark, {
-        speed: this.size / 15 + Math.random() / 3,
-        location: this.location.clone(),
-        direction: i,
-        color: this.color,
-      });
-      instantiate(Spark, {
-        speed: (this.size / 15) * Math.random(),
-        location: this.location.clone(),
-        direction: i,
-        color: this.color,
-      });
-    }
+
+    heartCoordinates.forEach((coord, i) => {
+      for (let i = 0; i < 5; i++) {
+        instantiate(Spark, {
+          speed: new Victor(
+            coord.x + Math.random() - 1,
+            coord.y + Math.random() - 1
+          ),
+          location: this.location.clone(),
+          color: this.color,
+        });
+      }
+    });
+
+    // for (let i = 0; i < Math.PI * 2; i = i + Math.random() * (Math.PI / 100)) {
+    // instantiate(Spark, {
+    //   speed: new Victor(0, this.size / 15 + Math.random() / 3).rotate(i),
+    //   location: this.location.clone(),
+    //   color: this.color,
+    // });
+    //   instantiate(Spark, {
+    //     speed: new Victor(0, (this.size / 15) * Math.random()).rotate(i),
+    //     location: this.location.clone(),
+    //     color: this.color,
+    //   });
+    // }
+
     instantiate(ExplosionLight, {
       location: this.location.clone(),
       color: this.color,

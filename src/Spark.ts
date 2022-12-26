@@ -13,15 +13,13 @@ export default class Spark implements GameObject {
   constructor({
     id,
     location = new Victor(0, 0),
-    direction,
     color,
     speed,
   }: {
     id: string;
     location: Victor;
-    direction: number;
     color: Color;
-    speed: number;
+    speed: Victor;
   }) {
     this.color =
       color ||
@@ -30,22 +28,19 @@ export default class Spark implements GameObject {
         g: 255,
         b: 255,
       });
-    this.speed = speed ?? Math.random() * 5;
+    this.speed = speed;
     this.createdAt = Date.now();
     this.location = location;
     this.id = id;
-    this.direction = direction + (Math.random() * Math.PI) / 6 - Math.PI / 12;
   }
 
   color: Color;
   createdAt: number;
   location: Victor;
-  speed: number;
-  ySpeed: number = 0;
+  speed: Victor;
   slowDownFactor: number = 0.981;
 
   id: string;
-  direction: number;
   update(): void {
     const timeSinceCreationMs = Date.now() - this.createdAt;
     const shouldBeDestroyed = timeSinceCreationMs > lifeSpanMs;
@@ -55,21 +50,19 @@ export default class Spark implements GameObject {
       return;
     }
 
-    this.speed = this.slowDownFactor * this.speed;
+    this.speed = this.speed.multiplyScalar(this.slowDownFactor);
 
     // g gravity
     // s distance
     // t time
     // s = (1/2)gt²
-    this.ySpeed =
-      0.5 * (GRAVITY * 0.1) * Math.pow(timeSinceCreationMs / 1000, 2);
+    this.speed = new Victor(
+      this.speed.x,
+      this.speed.y +
+        0.5 * (GRAVITY * 0.009) * Math.pow(timeSinceCreationMs / 1000, 2)
+    );
 
-    const fallDownVector = new Victor(0, this.ySpeed);
-
-    const changePosVector = new Victor(this.speed, 0);
-    changePosVector.rotate(this.direction);
-    this.location.add(changePosVector);
-    this.location.add(fallDownVector);
+    this.location.add(this.speed);
   }
 
   render(): void {
