@@ -3,8 +3,7 @@ import uniqid from "uniqid";
 import GameObject from "./GameObject";
 import { canvas, ctx } from "./canvas";
 import { TARGET_FRAME_DURATION } from "./contants";
-import FireworksScene from "./FireworksScene";
-import TextScene from "./TextScene";
+import SceneSwapper from "./SceneSwapper";
 
 const gameObjects: Record<string, GameObject> = {};
 
@@ -72,8 +71,7 @@ function loop(): void {
 }
 
 const createScene = (): void => {
-  instantiate(FireworksScene, {});
-  // instantiate(TextScene, {});
+  instantiate(SceneSwapper, {});
 };
 
 createScene();

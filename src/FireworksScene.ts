@@ -8,21 +8,37 @@ export default class FireworksScene implements GameObject {
   constructor({
     id,
     location = new Victor(0, 0),
+    message,
   }: {
     id: string;
     location: Victor;
+    message: string;
   }) {
     this.location = location;
     this.id = id;
-
-    this.launchRocket();
+    this.message = message;
 
     let i = 1000;
     while (i--) {
       instantiate(Star, {});
     }
+
+    for (let i = 0; i < message.length; i++) {
+      const char = message[i];
+      const width = window.innerWidth;
+
+      instantiate(Rocket, {
+        char,
+        location: new Victor(
+          (width / message.length) * i + 100,
+          window.innerHeight
+        ),
+        direction: -Math.PI / 2,
+      });
+    }
   }
 
+  message: string;
   location: Victor;
   id: string;
 

@@ -1,81 +1,80 @@
-import Color from "color";
 import Victor from "victor";
 import { ctx } from "./canvas";
-import DebugDot from "./DebugDot";
 import GameObject from "./GameObject";
-import { destroy, instantiate, timeDelta } from "./main";
-import Spark from "./Spark";
+import { destroy } from "./main";
 
 export default class TextScene implements GameObject {
   constructor({
     id,
     location = new Victor(0, 0),
+    textToParse,
   }: {
     id: string;
     location: Victor;
+    textToParse: string;
   }) {
     this.location = location;
     this.id = id;
+    this.textToParse = textToParse;
   }
 
   location: Victor;
   id: string;
+  textToParse: string = "";
+  currentChar: string = "";
 
   timePassed: number = 0;
 
-  update(): void {
-    this.timePassed = this.timePassed + timeDelta;
-  }
-
-  once = false;
+  update(): void {}
 
   render(): void {
-    this.once = true;
+    if (this.textToParse.length === 0) {
+      destroy(this);
+      return;
+    }
+    const char = this.textToParse[0];
+    this.textToParse = this.textToParse.substring(1);
+
+    // if (localStorage.getItem(char) !== null) {
+    //   window.parsingTextDone = true;
+    //   return;
+    // }
+
     ctx.strokeStyle = "white";
-    ctx.font = "20px serif";
-    ctx.strokeText("♥", 10, 30);
+    ctx.font = "8px serif";
+    ctx.strokeText(char, 10, 30);
     const width = innerWidth;
     const height = innerHeight;
     const imgData = ctx.getImageData(0, 0, width, height);
     const rgba = imgData.data;
 
-    let count = 0;
     const coordinates = [];
 
-    // if (!this.once) {
-    for (var px = 0, ct = width * height * 4; px < ct; px += 4) {
-      var r = rgba[px];
-      var g = rgba[px + 1];
-      var b = rgba[px + 2];
-      var a = rgba[px + 3];
+    for (let px = 0, ct = width * height * 4; px < ct; px += 4) {
+      const r = rgba[px];
+      const g = rgba[px + 1];
+      const b = rgba[px + 2];
 
       const threshold = 50;
       if (r > threshold || g > threshold || b > threshold) {
-        count++;
         const x = (px / 4) % width;
         const y = Math.floor(px / 4 / height);
 
-        coordinates.push({ x: x, y });
+        coordinates.push({ x, y });
       }
     }
-    console.log({ count, total: width * height }, coordinates);
 
-    coordinates.forEach((coord) => {
-      instantiate(DebugDot, {
-        location: new Victor(coord.x, 50 + coord.y),
-        color: "red",
-      });
-    });
+    const xAverage =
+      coordinates.reduce((prev, curr) => prev + curr.x, 0) / coordinates.length;
 
-    instantiate(DebugDot, {
-      location: new Victor(17, 50 + 17),
-      color: "white",
-    });
+    const yAverage =
+      coordinates.reduce((prev, curr) => prev + curr.y, 0) / coordinates.length;
 
     const centeredCoords = coordinates.map((coord) => ({
-      x: coord.x - 17,
-      y: coord.y - 17,
+      x: coord.x - xAverage, // 17
+      y: coord.y - yAverage, // 17
     }));
-    console.log("centered", centeredCoords);
+
+    localStorage.setItem(char, JSON.stringify(centeredCoords));
   }
 }

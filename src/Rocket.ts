@@ -33,10 +33,12 @@ export default class Rocket implements GameObject {
     id,
     location = new Victor(0, 0),
     direction,
+    char,
   }: {
     id: string;
     location: Victor;
     direction: number;
+    char: string;
   }) {
     this.createdAt = Date.now();
     this.path = createPath();
@@ -46,10 +48,12 @@ export default class Rocket implements GameObject {
     this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
     this.history = [];
     this.speed = (Math.random() * maxSpeed) / 3 + (maxSpeed * 2) / 3;
+    this.char = char;
   }
 
   history: Victor[];
 
+  char: string;
   speed: number;
   color: Color;
   createdAt: number;
@@ -158,31 +162,45 @@ export default class Rocket implements GameObject {
       instantiate(Sparkle, { location: this.location.clone() });
     }
 
-    heartCoordinates.forEach((coord, i) => {
-      for (let i = 0; i < 5; i++) {
+    console.log(this.char);
+    const storedCoordinates = localStorage.getItem(this.char);
+    const charCoordinates: Array<{ x: number; y: number }> = storedCoordinates
+      ? JSON.parse(storedCoordinates)
+      : null;
+
+    console.log(storedCoordinates, charCoordinates);
+
+    if (charCoordinates !== null) {
+      charCoordinates.forEach((coord, i) => {
+        for (let i = 0; i < 5; i++) {
+          instantiate(Spark, {
+            speed: new Victor(
+              coord.x + Math.random() - 1,
+              coord.y + Math.random() - 1
+            ),
+            location: this.location.clone(),
+            color: this.color,
+          });
+        }
+      });
+    } else {
+      for (
+        let i = 0;
+        i < Math.PI * 2;
+        i = i + Math.random() * (Math.PI / 100)
+      ) {
         instantiate(Spark, {
-          speed: new Victor(
-            coord.x + Math.random() - 1,
-            coord.y + Math.random() - 1
-          ),
+          speed: new Victor(0, this.size / 15 + Math.random() / 3).rotate(i),
+          location: this.location.clone(),
+          color: this.color,
+        });
+        instantiate(Spark, {
+          speed: new Victor(0, (this.size / 15) * Math.random()).rotate(i),
           location: this.location.clone(),
           color: this.color,
         });
       }
-    });
-
-    // for (let i = 0; i < Math.PI * 2; i = i + Math.random() * (Math.PI / 100)) {
-    // instantiate(Spark, {
-    //   speed: new Victor(0, this.size / 15 + Math.random() / 3).rotate(i),
-    //   location: this.location.clone(),
-    //   color: this.color,
-    // });
-    //   instantiate(Spark, {
-    //     speed: new Victor(0, (this.size / 15) * Math.random()).rotate(i),
-    //     location: this.location.clone(),
-    //     color: this.color,
-    //   });
-    // }
+    }
 
     instantiate(ExplosionLight, {
       location: this.location.clone(),
