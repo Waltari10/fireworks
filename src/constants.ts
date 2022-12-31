@@ -12,6 +12,6 @@ const colors = new Array(200)
       Math.random() * 255,
     ]).saturate(100)
   )
-  .filter((c) => c.contrast(Color("black")) > 12);
+  .filter((c) => c.contrast(Color("black")) > 15);
 
 export const COLORS = [...colors];
