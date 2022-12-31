@@ -35,10 +35,10 @@ export default class TextScene implements GameObject {
     const char = this.textToParse[0];
     this.textToParse = this.textToParse.substring(1);
 
-    // if (localStorage.getItem(char) !== null) {
-    //   window.parsingTextDone = true;
-    //   return;
-    // }
+    if (localStorage.getItem(char) !== null) {
+      window.parsingTextDone = true;
+      return;
+    }
 
     ctx.strokeStyle = "white";
     ctx.font = "20px Arial";

@@ -18,7 +18,9 @@ export default class SceneSwapper implements GameObject {
     this.location = location;
     this.id = id;
 
-    this.textSceneInstance = instantiate(TextScene, { textToParse: msg });
+    this.textSceneInstance = instantiate(TextScene, {
+      textToParse: uniq(msg.split("")).join(""),
+    });
   }
 
   textSceneInstance: GameObject;
