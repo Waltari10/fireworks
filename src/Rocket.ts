@@ -8,11 +8,10 @@ import { TARGET_FRAME_DURATION } from "./contants";
 import _ from "lodash";
 
 import Color from "color";
-import Sparkle from "./Sparkle";
+// import Sparkle from "./Sparkle";
 import ExplosionLight from "./ExplosionLight";
 import Spark from "./Spark";
 import { COLORS } from "./constants";
-import heartCoordinates from "./heart.json";
 
 const lifeSpanMs = 2500;
 const pathLength = lifeSpanMs / TARGET_FRAME_DURATION;
@@ -45,9 +44,10 @@ export default class Rocket implements GameObject {
     this.location = location;
     this.id = id;
     this.direction = direction;
+    // this.color = new Color([255, 255, 255]); // COLORS[Math.floor(Math.random() * COLORS.length)];
     this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
     this.history = [];
-    this.speed = (Math.random() * maxSpeed) / 3 + (maxSpeed * 2) / 3;
+    this.speed = (0.5 * maxSpeed) / 3 + (maxSpeed * 2) / 3;
     this.char = char;
   }
 
@@ -64,7 +64,7 @@ export default class Rocket implements GameObject {
   id: string;
   direction: number;
   initialSpeed = maxSpeed;
-  size = Math.random() * 80 + 20;
+  size = 0.05 * Math.random() + 0.15;
   slowDownFactor = 0.98; // TODO: Adjust based on screen height to stop at middle of screen
   update(): void {
     const timeSinceCreationMs = Date.now() - this.createdAt;
@@ -90,7 +90,7 @@ export default class Rocket implements GameObject {
 
     this.speed = this.speed * this.slowDownFactor;
     const forwardSpeed = this.speed * this.slowDownFactor;
-    const sidewaysSpeed = 5;
+    const sidewaysSpeed = 2.5;
 
     const forwardVector = new Victor(
       forwardSpeed,
@@ -158,25 +158,22 @@ export default class Rocket implements GameObject {
   }
 
   explode() {
-    for (let i = 0; i < 25; i++) {
-      instantiate(Sparkle, { location: this.location.clone() });
-    }
+    // for (let i = 0; i < 5; i++) {
+    //   instantiate(Sparkle, { location: this.location.clone() });
+    // }
 
-    console.log(this.char);
     const storedCoordinates = localStorage.getItem(this.char);
     const charCoordinates: Array<{ x: number; y: number }> = storedCoordinates
       ? JSON.parse(storedCoordinates)
       : null;
-
-    console.log(storedCoordinates, charCoordinates);
 
     if (charCoordinates !== null) {
       charCoordinates.forEach((coord, i) => {
         for (let i = 0; i < 5; i++) {
           instantiate(Spark, {
             speed: new Victor(
-              coord.x + Math.random() - 1,
-              coord.y + Math.random() - 1
+              (coord.x + Math.random() - 1) * this.size,
+              (coord.y + Math.random() - 1) * this.size
             ),
             location: this.location.clone(),
             color: this.color,

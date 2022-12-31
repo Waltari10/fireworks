@@ -41,7 +41,7 @@ export default class TextScene implements GameObject {
     // }
 
     ctx.strokeStyle = "white";
-    ctx.font = "8px serif";
+    ctx.font = "20px Arial";
     ctx.strokeText(char, 10, 30);
     const width = innerWidth;
     const height = innerHeight;

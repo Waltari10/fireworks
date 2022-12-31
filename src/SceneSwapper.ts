@@ -4,7 +4,8 @@ import GameObject from "./GameObject";
 import { instantiate } from "./main";
 import TextScene from "./TextScene";
 
-const msg = "HYVÄÄ";
+// NOTE: Emojis don't work
+const msg = "HYVÄÄ UUTTA VUOTTA ♥";
 
 export default class SceneSwapper implements GameObject {
   constructor({

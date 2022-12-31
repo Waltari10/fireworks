@@ -23,19 +23,29 @@ export default class FireworksScene implements GameObject {
       instantiate(Star, {});
     }
 
-    for (let i = 0; i < message.length; i++) {
-      const char = message[i];
-      const width = window.innerWidth;
+    const splitMsg = message.split(" ");
 
-      instantiate(Rocket, {
-        char,
-        location: new Victor(
-          (width / message.length) * i + 100,
-          window.innerHeight
-        ),
-        direction: -Math.PI / 2,
-      });
-    }
+    splitMsg.forEach((msgPart, i) => {
+      const trimmedMsgPart = msgPart.trim();
+      setTimeout(() => {
+        for (let i = 0; i < trimmedMsgPart.length; i++) {
+          const char = trimmedMsgPart[i];
+          const width = window.innerWidth * 0.9;
+
+          const charWidth = 100;
+          const msgWidth = trimmedMsgPart.length * charWidth;
+
+          instantiate(Rocket, {
+            char,
+            location: new Victor(
+              width / 2 - msgWidth / 2 + i * charWidth + width * 0.1,
+              window.innerHeight
+            ),
+            direction: -Math.PI / 2,
+          });
+        }
+      }, 4000 * i);
+    });
   }
 
   message: string;
